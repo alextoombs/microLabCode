@@ -1,0 +1,95 @@
+#include "NDKernel.c"
+
+void display_digit(int data){
+trisd=0x00;
+
+switch(data){
+case 0:
+portd=0x04;
+break;
+case 1:
+portd=0x9F;
+break;
+case 2:
+portd=0x22;
+break;
+case 3:
+portd=0x60;
+break;
+case 4:
+portd=0x51;
+break;
+case 5:
+portd=0x48;
+break;
+case 6:
+portd=0x88;
+break;
+case 7:
+portd=0xE5;
+break;
+case 8:
+portd=0x00;
+break;
+case 9:
+portd=0x41;
+break;
+}
+}
+
+void OutputVoltage(int v){
+trise=0x00;
+
+switch(v){
+case 0:
+porte=000b;
+break;
+case 1:
+porte=001b;
+break;
+case 2:
+porte=010b;
+break;
+case 3:
+porte=011b;
+break;
+case 4:
+porte=100b;
+break;
+case 5:
+porte=101b;
+break;
+case 6:
+porte=110b;
+break;
+case 7:
+porte=111b;
+break;
+}
+}
+
+void main(void){
+
+serial_init(12);
+trisb |= bit(4);
+int x=0;
+while(1){
+display_digit(x);
+if((portb & bit(4))==0){
+tprints("\r\n");
+delay_ms(1500);
+x--;
+p_int(x);
+display_digit(x%8);
+OutputVoltage(x%8);
+}
+else if((portb & bit(5))==0){
+tprints("\r\n");
+delay_ms(1500);
+x++;
+p_int(x);
+display_digit(x%8);
+OutputVoltage(x%8);
+}
+}
+}

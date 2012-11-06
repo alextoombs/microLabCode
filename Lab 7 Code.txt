@@ -1,0 +1,88 @@
+#include <system.h>
+#include    "NDKernel7.c" /* includes operating system */
+#pragma CLOCK_FREQ 4000000
+#pragma DATA 0x2007, _HS_OSC & _WDT_OFF & _LVP_OFF & _CP_ALL
+
+// Lab 7 - PWM DAC
+//  EE21224 - Fall 2010
+//  Zach Stauder and Alex Toombs
+// PWM output testing from terminal version
+
+
+//*BE SURE YOU HAVE DOWNLOADED THE CORRECT KERNAL FILE!!!!!!!
+
+void display_digit(int data){
+trisd=0x00;
+
+switch(data){
+case 0:
+portd=0x04;
+break;
+case 1:
+portd=0x9F;
+break;
+case 2:
+portd=0x22;
+break;
+case 3:
+portd=0x60;
+break;
+case 4:
+portd=0x51;
+break;
+case 5:
+portd=0x48;
+break;
+case 6:
+portd=0x88;
+break;
+case 7:
+portd=0xE5;
+break;
+case 8:
+portd=0x00;
+break;
+case 9:
+portd=0x41;
+break;
+}
+}
+
+
+
+
+void main(void) { /* main program start */
+
+long PCNT;
+int pwm_period = 49; //ENTER THE VALUE YOU CALCULATED!!!!
+long duty_cycle;
+int v_out_msb = 0;
+display_digit(0); //set display to a zero
+trisd = 0x00; //*sets port d to outputs
+
+serial_init(12); //sets baud rate for terminal
+// 12 is 19200 for a 4MHz clock
+pwm_init(pwm_period); //initialize PWM output and specify PWM period
+
+//Display program banner
+tprints("\r\n ");
+tprints("\r\nLab 7 : PWM DAC");
+tprints("\r\n---------------------\r\n");
+tprints("\r\nThis program generates an analog voltage");
+tprints("\r\nusing a PWM signal ran through an RC network");
+//End of banner
+
+while(1){ //infinite loop
+tprints("\r\nPlease input a duty cycle percentage ");
+
+PCNT = getnum(); //get input from user
+duty_cycle = (((PCNT*((pwm_period+1)*4))/100)/4); //convert input
+ccpr1l = (duty_cycle); // set duty cycle
+tprints("\r\n ");  //add a blank line
+v_out_msb = ((5*PCNT)/100);
+display_digit(v_out_msb); //display output voltage to segment
+//only shows MSB
+
+
+}
+}

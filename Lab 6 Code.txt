@@ -1,0 +1,105 @@
+#include <system.h>
+#include    "NDKernel.c"        /* includes operating system */
+#pragma CLOCK_FREQ 4000000
+#pragma DATA 0x2007, _HS_OSC & _WDT_OFF & _LVP_OFF
+
+/* EE21224 Fall 10                              */
+/* Lab 6 - Modified starter code   */
+/* Zach Stauder and Alex Toombs                         */
+/* 10/26/2010   */
+
+
+void display_digit(int data) {
+trisd=0x00;
+
+switch(data){
+      case 0:
+              portd=0x04;
+              break;
+      case 1:
+              portd=0x9F;
+              break;
+      case 2:
+              portd=0x22;
+              break;
+      case 3:
+              portd=0x60;
+              break;
+      case 4:
+              portd=0x51;
+              break;
+      case 5:
+              portd=0x48;
+              break;
+      case 6:
+              portd=0x88;
+              break;
+      case 7:
+              portd=0xE5;
+              break;
+      case 8:
+              portd=0x00;
+              break;
+      case 9:
+              portd=0x41;
+              break;
+      }
+}
+
+void OutputVoltage(int data){
+trise=0x00;
+
+switch(data){
+  case 0:
+  porte=000b;
+  break;
+  case 1:
+  porte=001b;
+  break;
+  case 2:
+  porte=010b;
+  break;
+  case 3:
+  porte=011b;
+  break;
+  case 4:
+  porte=100b;
+  break;
+  case 5:
+  porte=101b;
+  break;
+  case 6:
+  porte=110b;
+  break;
+  case 7:
+  porte=111b;
+  break;
+  }
+}
+
+void main(void){
+
+      int guess = 0;
+      int upper;
+      int lower;
+      int i = 0;
+      int N = 4;
+
+      trisb |= bit(3);
+
+
+      while(1){
+              upper = 7;
+              lower = 0;
+              for (i=0;i<N;i++){
+                      guess = (upper + lower)/2;
+                      OutputVoltage(guess);
+                      delay_ms(2000);                    //pause to
+let the output to settle before checking.
+                      if((portb & bit(3))==0){
+upper = guess;}
+                      else{ lower = guess;}
+              }
+              display_digit(guess);
+      }
+}
